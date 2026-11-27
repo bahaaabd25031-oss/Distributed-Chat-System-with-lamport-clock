@@ -1,9 +1,12 @@
-this system implements a multi-client, terminal-based chat application using a centralized client-server architecture over TCP sockets (127.0.0.1:65000). To establish a consistent causal message history across asynchronous network connections without relying on synchronized physical clocks, the system pairs each message with a Lamport Clock timestamp and tie-breaking with id.
+this system implements a multi-client, terminal-based chat application using a centralized client-server architecture over TCP sockets (127.0.0.1:65000). 
+To establish a consistent causal message history across asynchronous network connections without relying on synchronized physical clocks, 
+the system pairs each message with a Lamport Clock timestamp and tie-breaking with id.
 
 Distributed Systems Mechanisms:
 --using Lamport clock for causal ordering of messages this ensures that if message "A" precedes message "B" then Timestamp(A) < Timestamp(B).
 --using user id to tie break between messages with equal timestamp (concurrent events).
---the server side of the system uses a thread for each user and thread safe queues like (users, messages, messages_history) with a locking mechanism (threading.lock) to prevent race conditions when accessing shared resources.
+--the server side of the system uses a thread for each user and thread safe queues like (users, messages, messages_history) 
+with a locking mechanism (threading.lock) to prevent race conditions when accessing shared resources.
 --the client side of the system uses a thread for sending messages and a thread for receiving them this allows the user to receive messages without the "input()" function blocking the "recv()" function that receives the messages.
 --When a new client connects, the server immediately replays messages_history over the socket before entering the live receive loop, bringing late-joining nodes up to date with prior chat state.
 
