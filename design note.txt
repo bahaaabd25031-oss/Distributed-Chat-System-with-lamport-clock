@@ -7,10 +7,14 @@ Distributed Systems Mechanisms:
 --using user id to tie break between messages with equal timestamp (concurrent events).
 --the server side of the system uses a thread for each user and thread safe queues like (users, messages, messages_history) 
 with a locking mechanism (threading.lock) to prevent race conditions when accessing shared resources.
---the client side of the system uses a thread for sending messages and a thread for receiving them this allows the user to receive messages without the "input()" function blocking the "recv()" function that receives the messages.
---When a new client connects, the server immediately replays messages_history over the socket before entering the live receive loop, bringing late-joining nodes up to date with prior chat state.
+--the client side of the system uses a thread for sending messages and a thread for receiving them this allows the user to receive messages 
+without the "input()" function blocking the "recv()" function that receives the messages.
+--When a new client connects, the server immediately replays messages_history over the socket before entering the live receive loop,
+bringing late-joining nodes up to date with prior chat state.
 
 Trade-offs:
---Client/server architecture: Single Point of Failure & Bottleneck. Relying on a single central server simplifies membership and history replay, but a server crash halts all communication.
+--Client/server architecture: Single Point of Failure & Bottleneck. Relying on a single central server simplifies
+membership and history replay, but a server crash halts all communication.
 --Lamport clock: it cannot distinguish between concurrent events so it relies on id for tie break.
---Storing messages in memory: messages_history resides strictly in memory, restarting the server wipes all history, and memory consumption will grow indefinitely.
+--Storing messages in memory: messages_history resides strictly in memory, restarting the server wipes all history, 
+and memory consumption will grow indefinitely.
